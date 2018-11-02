@@ -3,7 +3,6 @@
 
   // basic utils
   const grab = require('ps-grab');
-  const fs = require('fs-extra');
   const path = require('path');
 
   // lodash utils

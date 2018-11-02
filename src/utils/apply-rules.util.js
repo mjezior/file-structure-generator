@@ -8,7 +8,6 @@ const _forEach = require('lodash/forEach');
 const _filter = require('lodash/filter');
 const _pickBy = require('lodash/pickBy');
 const _includes = require('lodash/includes');
-const _difference = require('lodash/difference');
 
 const textCase = require('./text-case.util');
 
@@ -28,7 +27,7 @@ module.exports = applyRules = (componentName, basePath, rulesSets, options) => {
         item.indexOf(options.generatedFile.nameTag) !== -1
       ));
       _forEach(items, (item) => {
-        console.log('generated file: ' + item);
+        console.log('generated file: ' + item); // eslint-disable-line no-console
       });
       _forEach(rulesSets, (ruleSet) => {
         const pathPattern = escapeStringRegexp(path.normalize(path.resolve(path.format({
