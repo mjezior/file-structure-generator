@@ -26,7 +26,7 @@ module.exports = buildConfigItem = (userConfigItem) => {
     }
   };
   let configItem = {
-    outputDir: _defaults(userConfigItem.outputDir, defaultConfigItem.outputDir)
+    outputDir: _merge(defaultConfigItem.outputDir, userConfigItem.outputDir)
   };
 
   if (_has(userConfigItem, 'rules') && _isArray(userConfigItem.rules)) {

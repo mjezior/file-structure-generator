@@ -20,7 +20,7 @@ module.exports = {
         case: 'kebab'
       }]
     }, {
-      pattern: 'index.js',
+      pattern: '(./**/index.js)|(index.js)',
       replace: [{
         from: 'generateTest',
         case: 'camel'
@@ -32,10 +32,10 @@ module.exports = {
         case: 'kebab'
       }],
       generate: [{
-        marker: '//generateFirst',
+        marker: 'generateFirst',
         text: 'generated first text'
       }, {
-        marker: '//generateSecond',
+        marker: 'generateSecond',
         text: 'generated second text'
       }]
     }]

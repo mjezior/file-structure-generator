@@ -1,22 +1,18 @@
 (function () {
   'use strict';
 
-  // basic utils
   const grab = require('ps-grab');
   const path = require('path');
 
-  // lodash utils
   const _get = require('lodash/get');
   const _merge = require('lodash/merge');
 
-  // custom utils
   const _textCase = require('./utils/text-case.util');
   const makeDirectory = require('./utils/make-directory.util');
   const copyDirectory = require('./utils/copy-directory.util');
   const buildConfigItem = require('./utils/build-config-item.util');
   const applyRules = require('./utils/apply-rules.util');
 
-  // config
   const configPath = grab('--config') || 'fsg.conf.js';
   const config = require(`${process.cwd() + path.sep + configPath}`);
   const defaultConfigOptions = {
@@ -26,7 +22,6 @@
     }
   };
 
-  // options
   const options = {
     name: grab('--name'),
     type: grab('--type'),
@@ -40,7 +35,11 @@
   makeDirectory(dirName).then(() => {
     const sourceDir = `${userConfigOptions.templateDir}/${options.type}`;
     copyDirectory(sourceDir, dirName).then(() => {
-      applyRules(options.name, dirName, configItem.rules, userConfigOptions);
+      applyRules(configItem.rules, {
+        componentName: options.name,
+        basePath: dirName,
+        options: userConfigOptions,
+      });
     });
   });
 })();
