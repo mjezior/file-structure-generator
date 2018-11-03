@@ -10,5 +10,7 @@ module.exports = textCase = (caseName) => {
       return _camelCase;
     case 'pascal':
       return _pascalCase;
+    default: 
+      return (string) => (string);
   }
 };
