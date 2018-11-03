@@ -8,7 +8,7 @@
   const chalk = require('chalk');
   const argv = require('yargs')
     .usage('Usage: fsg --type=<type> --name=<name> [--config=<config>]')
-    .example('fsg filter testFilter', '- generate file structure for filter with name testFilter')
+    .example('fsg --type=filter --name=testFilter', '- generate file structure for filter with name testFilter')
     .alias('c', 'config')
     .alias('t', 'type')
     .alias('n', 'name')

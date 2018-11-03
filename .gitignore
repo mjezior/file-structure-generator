@@ -5,3 +5,4 @@ demo
 generate-files/*
 !generate-files/default
 !generate-files/fsg.conf.js
+.fsg/
