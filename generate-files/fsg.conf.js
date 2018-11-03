@@ -1,6 +1,6 @@
 module.exports = {
   options: {
-    templateDir: 'generate-files/',
+    templateDir: '.fsg/',
     generatedFile: {
       nameTag: 'generate',
       case: 'kebab'
