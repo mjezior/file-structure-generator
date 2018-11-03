@@ -3,6 +3,7 @@ const path = require('path');
 const klaw = require('klaw');
 const through2 = require('through2');
 const escapeStringRegexp = require('escape-string-regexp');
+const chalk = require('chalk');
 
 const _forEach = require('lodash/forEach');
 const _filter = require('lodash/filter');
@@ -37,8 +38,19 @@ function getProcessedContent(data, ruleSet, componentName) {
   return processedContent;
 }
 
+function getGeneratedFileName(fileName, config, params) {
+  const generatedNameTag = config.nameTag || params.options.generatedFile.nameTag;
+  const generatedNameCase = config.case || params.options.generatedFile.case;
+  return fileName.replace(
+    generatedNameTag,
+    textCase(generatedNameCase)(params.componentName)
+  );
+}
+
 function processFileWithRuleSet(fileName, ruleSet, params) {
   const { generatedFile } = ruleSet;
+  const generatedFileName = params.renameFile ?
+    getGeneratedFileName(fileName, generatedFile, params) : fileName;
   ruleSet = _pickBy(ruleSet, (rule, ruleKey) => (
     !_includes(['pattern', 'generatedFile'], ruleKey)
   ));
@@ -49,19 +61,14 @@ function processFileWithRuleSet(fileName, ruleSet, params) {
     const processedContent = getProcessedContent(data, ruleSet, params.componentName);
     fs.writeFileSync(fileName, processedContent, 'utf8');
     if (params.renameFile) {
-      const generatedNameTag = generatedFile.nameTag || params.options.generatedFile.nameTag;
-      const generatedNameCase = generatedFile.case || params.options.generatedFile.case;
-      const newFileName = fileName.replace(
-        generatedNameTag,
-        textCase(generatedNameCase)(params.componentName)
-      );
-      fs.rename(fileName, newFileName, (err) => {
+      fs.rename(fileName, generatedFileName, (err) => {
         if (err) {
           throw err;
         }
       });
     }
   });
+  return generatedFileName;
 }
 
 function getNormalizedPath(dir, base) {
@@ -81,8 +88,9 @@ function getMatchingItems(basePath, items, ruleSet) {
 
 function applyRuleSet(ruleSet, params) {
   const matchingItems = getMatchingItems(params.basePath, params.items, ruleSet);
+  const generatedFiles = [];
   _forEach(matchingItems, (matchingItem) => {
-    processFileWithRuleSet(
+    const generatedFile = processFileWithRuleSet(
       matchingItem,
       ruleSet, {
         componentName: params.componentName,
@@ -90,25 +98,31 @@ function applyRuleSet(ruleSet, params) {
         renameFile: _includes(params.itemsToRename, matchingItem),
       },
     );
+    generatedFiles.push(generatedFile);
   });
+  return generatedFiles;
 }
 
 function handleFileProcessing(items, rulesSets, params) {
   const itemsToRename = _filter(items, (item) => (
     item.indexOf(params.options.generatedFile.nameTag) !== -1
   ));
-  _forEach(items, (item) => {
-    console.log('generated file: ' + item); // eslint-disable-line no-console
-  });
+  let generatedFiles = [];
   _forEach(rulesSets, (ruleSet) => {
-    applyRuleSet(ruleSet, {
+    const processedFiles = applyRuleSet(ruleSet, {
       basePath: params.basePath,
       items,
       componentName: params.componentName,
       options: params.options,
       itemsToRename,
     });
+    generatedFiles = generatedFiles.concat(processedFiles);
   });
+  _forEach(generatedFiles, (item) => {
+    item = item.substring(item.indexOf(path.normalize(params.basePath)));
+    console.log(chalk.white('generated file:'), chalk.bold(item)); // eslint-disable-line no-console
+  });
+  console.log(chalk.green('Done.')); // eslint-disable-line no-console
 }
 
 module.exports = applyRules = (rulesSets, params) => {
