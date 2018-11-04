@@ -36,6 +36,7 @@ module.exports = {
         text: 'generated first text'
       }, {
         marker: 'generateSecond',
+        markerWrapper: '<!-- marker -->',
         text: 'generated second text'
       }]
     }]

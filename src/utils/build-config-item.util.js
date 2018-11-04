@@ -21,7 +21,8 @@ module.exports = buildConfigItem = (userConfigItem) => {
         case: 'kebab'
       }],
       generate: [{
-        marker: '//generate'
+        marker: 'generate',
+        markerWrapper: '//marker'
       }]
     }
   };

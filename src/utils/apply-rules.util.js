@@ -30,8 +30,9 @@ function getProcessedContent(data, ruleSet, componentName) {
           if (rule.keepMarker) {
             generateText += '\n//' + rule.marker;
           }
+          const markerRegexString = escapeStringRegexp(rule.markerWrapper.replace('marker', rule.marker));
           processedContent = processedContent.replace(
-            new RegExp(escapeStringRegexp(`//${rule.marker}`), 'g'),
+            new RegExp(markerRegexString, 'g'),
             generateText
           );
           break;

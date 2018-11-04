@@ -50,7 +50,11 @@
     const userConfigItem = _get(config, options.type);
     const userConfigOptions = _merge(defaultConfigOptions, _get(config, 'options'));
     const configItem = buildConfigItem(userConfigItem);
-    const dirName = configItem.outputDir.path + _textCase(configItem.outputDir.case)(options.name);
+    let dirName = configItem.outputDir.path;
+
+    if (!configItem.outputDir.withoutOwnDir) {
+      dirName += _textCase(configItem.outputDir.case)(options.name);
+    }
 
     makeDirectory(dirName).then(() => {
       const sourceDir = `${userConfigOptions.templateDir}/${options.type}`;

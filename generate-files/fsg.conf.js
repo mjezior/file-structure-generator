@@ -8,7 +8,8 @@ module.exports = {
   },
   default: {
     outputDir: {
-      path: 'demo/default/'
+      path: 'demo/default/',
+      withoutOwnDir: false
     },
     rules: [{
       pattern: 'index.js',
@@ -24,6 +25,7 @@ module.exports = {
       }],
       generate: [{
         marker: 'generateMarker',
+        markerWrapper: '//marker',
         text: 'console.log(\'and here you are :)\');',
         keepMarker: true
       }]
