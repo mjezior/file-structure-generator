@@ -6,6 +6,7 @@ const escapeStringRegexp = require('escape-string-regexp');
 const chalk = require('chalk');
 
 const _forEach = require('lodash/forEach');
+const _find = require('lodash/find');
 const _filter = require('lodash/filter');
 const _pickBy = require('lodash/pickBy');
 const _includes = require('lodash/includes');
@@ -39,7 +40,7 @@ function getProcessedContent(data, ruleSet, componentName) {
             });
           }
           if (rule.keepMarker) {
-            generateText += '\n//' + rule.marker;
+            generateText += '\n' + rule.markerWrapper.replace('marker', rule.marker);
           }
           const markerRegexString = escapeStringRegexp(rule.markerWrapper.replace('marker', rule.marker));
           processedContent = processedContent.replace(
@@ -142,14 +143,18 @@ function handleFileProcessing(items, rulesSets, params) {
 
 module.exports = applyRules = (rulesSets, params) => {
   const items = [];
-  const excludeDirFilter = through2.obj(function (item, enc, next) {
-    if (!item.stats.isDirectory()) {
+  const excludedDirs = ['.git', '.fsg', 'node_modules', 'bower_components'];
+  const excludeFilter = through2.obj(function (item, enc, next) {
+    const isInExcludedDir = _find(excludedDirs, (excludedDir) => (
+      _includes(item.path, excludedDir)
+    ));
+    if (!item.stats.isDirectory() && !isInExcludedDir) {
       this.push(item);
     }
     next();
   });
   klaw(params.basePath)
-    .pipe(excludeDirFilter)
+    .pipe(excludeFilter)
     .on('data', item => items.push(item.path))
     .on('end', () => {
       handleFileProcessing(items, rulesSets, params);
