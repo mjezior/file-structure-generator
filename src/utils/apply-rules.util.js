@@ -9,9 +9,19 @@ const _forEach = require('lodash/forEach');
 const _filter = require('lodash/filter');
 const _pickBy = require('lodash/pickBy');
 const _includes = require('lodash/includes');
+const _isArray = require('lodash/isArray');
 
 const textCase = require('./text-case.util');
 const replaceMultiple = require('./replace-multiple.util');
+
+function applyReplaceRule(content, rule, componentName) {
+  const replaceText = textCase(rule.case)(rule.to || componentName);
+  content = content.replace(
+    new RegExp(escapeStringRegexp(`{{${rule.from}}}`), 'g'),
+    replaceText
+  );
+  return content;
+}
 
 function getProcessedContent(data, ruleSet, componentName) {
   let processedContent = data;
@@ -19,14 +29,15 @@ function getProcessedContent(data, ruleSet, componentName) {
     _forEach(rulesItems, (rule) => {
       switch (ruleKey) {
         case 'replace':
-          const replaceText = textCase(rule.case)(rule.to || componentName);
-          processedContent = processedContent.replace(
-            new RegExp(escapeStringRegexp(`{{${rule.from}}}`), 'g'),
-            replaceText
-          );
+          processedContent = applyReplaceRule(processedContent, rule, componentName);
           break;
         case 'generate':
           let generateText = rule.text;
+          if (_isArray(rule.replace)) {
+            _forEach(rule.replace, (replaceRule) => {
+              generateText = applyReplaceRule(generateText, replaceRule, componentName);
+            });
+          }
           if (rule.keepMarker) {
             generateText += '\n//' + rule.marker;
           }

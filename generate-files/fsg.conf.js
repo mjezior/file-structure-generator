@@ -26,7 +26,11 @@ module.exports = {
       generate: [{
         marker: 'generateMarker',
         markerWrapper: '//marker',
-        text: 'console.log(\'and here you are :)\');',
+        text: 'console.log(\'and here you have {{generate}} component :)\');',
+        replace: [{
+          from: 'generate',
+          case: 'camel'
+        }],
         keepMarker: true
       }]
     }]

@@ -37,7 +37,11 @@ module.exports = {
       }, {
         marker: 'generateSecond',
         markerWrapper: '<!-- marker -->',
-        text: 'generated second text'
+        text: 'generated {{generate}} text',
+        replace: [{
+          from: 'generate',
+          case: 'pascal'
+        }]
       }]
     }]
   }
