@@ -1,5 +1,6 @@
 const _kebabCase = require('lodash/kebabCase');
 const _camelCase = require('lodash/camelCase');
+const _snakeCase = require('lodash/snakeCase');
 const _pascalCase = require('./pascal-case.util');
 
 module.exports = textCase = (caseName) => {
@@ -8,6 +9,8 @@ module.exports = textCase = (caseName) => {
       return _kebabCase;
     case 'camel':
       return _camelCase;
+    case 'snake':
+      return _snakeCase;
     case 'pascal':
       return _pascalCase;
     default: 

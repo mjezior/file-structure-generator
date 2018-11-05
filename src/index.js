@@ -3,6 +3,7 @@
 (function () {
   'use strict';
 
+  require('module-alias/register');
   const version = require('../package.json').version;
   const path = require('path');
   const chalk = require('chalk');
@@ -23,33 +24,28 @@
     .argv;
 
   const _get = require('lodash/get');
-  const _merge = require('lodash/merge');
 
   const _textCase = require('./utils/text-case.util');
   const makeDirectory = require('./utils/make-directory.util');
   const copyDirectory = require('./utils/copy-directory.util');
-  const buildConfigItem = require('./utils/build-config-item.util');
   const applyRules = require('./utils/apply-rules.util');
+  const resolveValueFromConfig = require('./utils/resolve-value-from-config.util');
 
   try {
     const configPath = argv.config || 'fsg.conf.js';
     const config = require(`${process.cwd() + path.sep + configPath}`);
-    const defaultConfigOptions = {
-      generatedFile: {
-        nameTag: 'generate',
-        case: 'kebab'
-      }
-    };
-
     const { type, name } = argv;
     const options = {
       type,
       name,
     };
-
-    const userConfigItem = _get(config, options.type);
-    const userConfigOptions = _merge(defaultConfigOptions, _get(config, 'options'));
-    const configItem = buildConfigItem(userConfigItem);
+    const configItem = _get(config, options.type);
+    const configOptions = resolveValueFromConfig(_get(config, 'options'), {
+      valueType: 'options',
+    });
+    configItem.outputDir = resolveValueFromConfig(configItem.outputDir, {
+      valueType: 'outputDir',
+    });
     let dirName = configItem.outputDir.path;
 
     if (!configItem.outputDir.withoutOwnDir) {
@@ -57,12 +53,14 @@
     }
 
     makeDirectory(dirName).then(() => {
-      const sourceDir = `${userConfigOptions.templateDir}/${options.type}`;
+      const sourceDir = `${configOptions.templateDir}/${options.type}`;
       copyDirectory(sourceDir, dirName).then(() => {
         applyRules(configItem.rules, {
           componentName: options.name,
           basePath: dirName,
-          options: userConfigOptions,
+          userConfig: config,
+          type: options.type,
+          options: configOptions,
         });
       });
     });

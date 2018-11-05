@@ -3,12 +3,16 @@ module.exports = {
     templateDir: 'generate-files/',
     generatedFile: {
       nameTag: 'generate',
-      case: 'kebab'
+      case: 'camel'
     }
   },
   filter: {
     outputDir: {
       path: 'demo/filters/'
+    },
+    generatedFile: {
+      nameTag: 'generate',
+      case: 'snake'
     },
     rules: [{
       pattern: './**/generate.*.js',

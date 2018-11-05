@@ -8,18 +8,46 @@ const chalk = require('chalk');
 const _forEach = require('lodash/forEach');
 const _find = require('lodash/find');
 const _filter = require('lodash/filter');
-const _pickBy = require('lodash/pickBy');
+const _pick = require('lodash/pick');
 const _includes = require('lodash/includes');
 const _isArray = require('lodash/isArray');
 
 const textCase = require('./text-case.util');
 const replaceMultiple = require('./replace-multiple.util');
+const resolveValueFromConfig = require('./resolve-value-from-config.util');
 
 function applyReplaceRule(content, rule, componentName) {
-  const replaceText = textCase(rule.case)(rule.to || componentName);
+  const ruleConfig = resolveValueFromConfig(rule, {
+    valueType: 'replace'
+  });
+  const replaceText = textCase(ruleConfig.case)(ruleConfig.to || componentName);
   content = content.replace(
-    new RegExp(escapeStringRegexp(`{{${rule.from}}}`), 'g'),
+    new RegExp(escapeStringRegexp(`{{${ruleConfig.from}}}`), 'g'),
     replaceText
+  );
+  return content;
+}
+
+function applyGenerateRule(content, rule, componentName) {
+  const ruleConfig = resolveValueFromConfig(rule, {
+    valueType: 'generate'
+  });
+  let generateText = ruleConfig.text;
+  if (_isArray(ruleConfig.replace)) {
+    _forEach(ruleConfig.replace, (replaceRule) => {
+      const replaceRuleConfig = resolveValueFromConfig(replaceRule, {
+        valueType: 'replace'
+      });
+      generateText = applyReplaceRule(generateText, replaceRuleConfig, componentName);
+    });
+  }
+  if (ruleConfig.keepMarker) {
+    generateText += '\n' + ruleConfig.markerWrapper.replace('marker', ruleConfig.marker);
+  }
+  const markerRegexString = escapeStringRegexp(ruleConfig.markerWrapper.replace('marker', ruleConfig.marker));
+  content = content.replace(
+    new RegExp(markerRegexString, 'g'),
+    generateText
   );
   return content;
 }
@@ -29,47 +57,36 @@ function getProcessedContent(data, ruleSet, componentName) {
   _forEach(ruleSet, (rulesItems, ruleKey) => {
     _forEach(rulesItems, (rule) => {
       switch (ruleKey) {
-        case 'replace':
+        case 'replace': {
           processedContent = applyReplaceRule(processedContent, rule, componentName);
           break;
-        case 'generate':
-          let generateText = rule.text;
-          if (_isArray(rule.replace)) {
-            _forEach(rule.replace, (replaceRule) => {
-              generateText = applyReplaceRule(generateText, replaceRule, componentName);
-            });
-          }
-          if (rule.keepMarker) {
-            generateText += '\n' + rule.markerWrapper.replace('marker', rule.marker);
-          }
-          const markerRegexString = escapeStringRegexp(rule.markerWrapper.replace('marker', rule.marker));
-          processedContent = processedContent.replace(
-            new RegExp(markerRegexString, 'g'),
-            generateText
-          );
+        }
+        case 'generate': {
+          processedContent = applyGenerateRule(processedContent, rule, componentName);
           break;
+        }
       }
     });
   });
   return processedContent;
 }
 
-function getGeneratedFileName(fileName, config, params) {
-  const generatedNameTag = config.nameTag || params.options.generatedFile.nameTag;
-  const generatedNameCase = config.case || params.options.generatedFile.case;
+function getGeneratedFileName(fileName, ruleSet, params) {
+  const generatedFileConfig = resolveValueFromConfig(params.userConfig, {
+    valueType: 'generatedFile',
+    type: params.type,
+    ruleIndex: params.ruleIndex,
+  });
   return fileName.replace(
-    generatedNameTag,
-    textCase(generatedNameCase)(params.componentName)
+    generatedFileConfig.nameTag,
+    textCase(generatedFileConfig.case)(params.componentName)
   );
 }
 
 function processFileWithRuleSet(fileName, ruleSet, params) {
-  const { generatedFile } = ruleSet;
   const generatedFileName = params.renameFile ?
-    getGeneratedFileName(fileName, generatedFile, params) : fileName;
-  ruleSet = _pickBy(ruleSet, (rule, ruleKey) => (
-    !_includes(['pattern', 'generatedFile'], ruleKey)
-  ));
+    getGeneratedFileName(fileName, ruleSet, params) : fileName;
+  ruleSet = _pick(ruleSet, ['replace', 'generate']);
   fs.readFile(fileName, 'utf8', (err, data) => {
     if (err)  {
       throw err;
@@ -111,6 +128,9 @@ function applyRuleSet(ruleSet, params) {
       ruleSet, {
         componentName: params.componentName,
         options: params.options,
+        userConfig: params.userConfig,
+        type: params.type,
+        ruleIndex: params.ruleIndex,
         renameFile: _includes(params.itemsToRename, matchingItem),
       },
     );
@@ -121,15 +141,21 @@ function applyRuleSet(ruleSet, params) {
 
 function handleFileProcessing(items, rulesSets, params) {
   const itemsToRename = _filter(items, (item) => (
-    item.indexOf(params.options.generatedFile.nameTag) !== -1
+    item.indexOf(resolveValueFromConfig(params.userConfig, {
+      valueType: 'generatedFile',
+      type: params.type
+    }).nameTag) !== -1
   ));
   let generatedFiles = [];
-  _forEach(rulesSets, (ruleSet) => {
+  _forEach(rulesSets, (ruleSet, ruleIndex) => {
     const processedFiles = applyRuleSet(ruleSet, {
       basePath: params.basePath,
       items,
       componentName: params.componentName,
       options: params.options,
+      userConfig: params.userConfig,
+      type: params.type,
+      ruleIndex,
       itemsToRename,
     });
     generatedFiles = generatedFiles.concat(processedFiles);

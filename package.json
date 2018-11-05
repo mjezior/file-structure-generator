@@ -47,6 +47,7 @@
   },
   "_moduleAliases": {
     "@root": ".",
+    "@src": "./src",
     "@utils": "./src/utils"
   }
 }
