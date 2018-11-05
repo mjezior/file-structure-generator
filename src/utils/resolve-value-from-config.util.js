@@ -13,8 +13,7 @@ module.exports = function resolveValueFromConfig(userConfig, params) {
     }
     case 'generatedFile': {
       return resolveGeneratedFileConfig(userConfig, {
-        type: params.type,
-        ruleIndex: params.ruleIndex,
+        ...params,
       });
     }
   }

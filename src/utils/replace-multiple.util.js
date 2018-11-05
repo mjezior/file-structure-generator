@@ -1,6 +1,6 @@
 const _forEach = require('lodash/forEach');
-const _isString = require('lodash/isString');
 const _isArray = require('lodash/isArray');
+const _isString = require('lodash/isString');
 
 module.exports = replaceMultiple = (text, baseArray, replaceArray) => {
   let replacedText = _isString(text) ? text : '';

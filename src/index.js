@@ -6,7 +6,6 @@
   require('module-alias/register');
   const version = require('../package.json').version;
   const path = require('path');
-  const chalk = require('chalk');
   const argv = require('yargs')
     .usage('Usage: fsg --type=<type> --name=<name> [--config=<config>]')
     .example('fsg --type=filter --name=testFilter', '- generate file structure for filter with name testFilter')
@@ -25,15 +24,17 @@
 
   const _get = require('lodash/get');
 
-  const _textCase = require('./utils/text-case.util');
-  const makeDirectory = require('./utils/make-directory.util');
-  const copyDirectory = require('./utils/copy-directory.util');
   const applyRules = require('./utils/apply-rules.util');
+  const copyDirectory = require('./utils/copy-directory.util');
+  const logger = require('./utils/logger.util');
+  const makeDirectory = require('./utils/make-directory.util');
   const resolveValueFromConfig = require('./utils/resolve-value-from-config.util');
+  const textCase = require('./utils/text-case.util');
+
+  const configPath = `${process.cwd() + path.sep + (argv.config || 'fsg.conf.js')}`;
 
   try {
-    const configPath = argv.config || 'fsg.conf.js';
-    const config = require(`${process.cwd() + path.sep + configPath}`);
+    const config = require(configPath);
     const { type, name } = argv;
     const options = {
       type,
@@ -49,7 +50,7 @@
     let dirName = configItem.outputDir.path;
 
     if (!configItem.outputDir.withoutOwnDir) {
-      dirName += _textCase(configItem.outputDir.case)(options.name);
+      dirName += textCase(configItem.outputDir.case)(options.name);
     }
 
     makeDirectory(dirName).then(() => {
@@ -65,6 +66,6 @@
       });
     });
   } catch(e) {
-    console.error(chalk.bgRed('Error: Couldn\'t find specified config file!')); // eslint-disable-line no-console
+    logger.log([`Error: Couldn\'t find specified config file (${configPath})!`, 'bgRed']);
   }
 })();
