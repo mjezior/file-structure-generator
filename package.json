@@ -1,6 +1,6 @@
 {
   "name": "file-structure-generator",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "File structure generator util",
   "main": "index.js",
   "scripts": {
@@ -21,6 +21,23 @@
   },
   "author": "Mateusz Jeziorek",
   "license": "MIT",
+  "keywords": [
+    "file",
+    "directory",
+    "template",
+    "structure",
+    "generate",
+    "generator",
+    "tool"
+  ],
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/mjezior/file-structure-generator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mjezior/file-structure-generator/issues"
+  },
+  "homepage": "https://github.com/mjezior/file-structure-generator#readme",
   "bin": {
     "fsg": "./src/index.js"
   },
