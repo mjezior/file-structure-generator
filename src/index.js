@@ -4,7 +4,7 @@
   'use strict';
 
   require('module-alias/register');
-  const version = require('../package.json').version;
+  const version = require('@root/package.json').version;
   const path = require('path');
   const argv = require('yargs')
     .usage('Usage: fsg --type=<type> --name=<name> [--config=<config>]')
@@ -24,12 +24,12 @@
 
   const _get = require('lodash/get');
 
-  const applyRules = require('./utils/apply-rules.util');
-  const copyDirectory = require('./utils/copy-directory.util');
-  const logger = require('./utils/logger.util');
-  const makeDirectory = require('./utils/make-directory.util');
-  const resolveValueFromConfig = require('./utils/resolve-value-from-config.util');
-  const textCase = require('./utils/text-case.util');
+  const applyRules = require('@utils/apply-rules.util');
+  const copyDirectory = require('@utils/copy-directory.util');
+  const logger = require('@utils/logger.util');
+  const makeDirectory = require('@utils/make-directory.util');
+  const resolveValueFromConfig = require('@utils/resolve-value-from-config.util');
+  const textCase = require('@utils/text-case.util');
 
   const configPath = `${process.cwd() + path.sep + (argv.config || 'fsg.conf.js')}`;
 
