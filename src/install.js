@@ -10,7 +10,7 @@
   const destDir = `${process.env.INIT_CWD + path.sep}.fsg`;
 
   copyDirectory(sourceDir, destDir).then(() => {
-    logger.log(['Installed local'], ['.fsg', 'bold'], ['directory.']);
-    logger.log(['Please see'], ['.fsg/fsg.conf.js', 'bold'], ['for reference.']);
+    logger.log('Installed local', ['.fsg', 'bold'], 'directory.');
+    logger.log('Please see', ['.fsg/fsg.conf.js', 'bold'], 'for reference.');
   });
 })();
