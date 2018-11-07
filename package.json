@@ -1,6 +1,6 @@
 {
   "name": "file-structure-generator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "File structure generator util",
   "main": "index.js",
   "scripts": {
@@ -31,8 +31,8 @@
     "tool"
   ],
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/mjezior/file-structure-generator.git"
+    "type": "git",
+    "url": "https://github.com/mjezior/file-structure-generator.git"
   },
   "bugs": {
     "url": "https://github.com/mjezior/file-structure-generator/issues"
