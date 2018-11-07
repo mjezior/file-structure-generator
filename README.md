@@ -11,7 +11,7 @@ You can install **file-structure-generator** using following command:
 $ npm i file-structure-generator
 ```
 
-After installation, `.fsg` directory is being created. There you have:
+After local installation, `.fsg` directory is being created. There you have:
 - `fsg.conf.js` - a template config file,
 - `default/` - appropriate template directory for it.
 
@@ -225,7 +225,7 @@ module.exports = {
   }
 };
 ```
-As you can se there are many properties you can use to make your config more customized 
+As you can see, there are many properties you can use to make your config more customized 
 and universal. What's worth to notice, there are 3 levels of `generatedFile` object:
 - rule level
 - type level
@@ -274,7 +274,10 @@ For local installation, you will have to add following script in your `package.j
   "fsg": "./node_modules/.bin/fsg"
 },
 ```
-then you can run script by using `npm run fsg` with appropiate parameters
+then you can run script by using `npm run fsg` with appropriate parameters, so e.g.:
+```
+npm run fsg -- --t=default --n=testName
+```
 
 ### MIT License
 Copyright (c) 2018 Mateusz Jeziorek <mateusz.jeziorek@o2.pl>

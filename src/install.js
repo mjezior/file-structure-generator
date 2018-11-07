@@ -1,16 +1,18 @@
 (function () {
   'use strict';
 
-  const path = require('path');
+  if (!process.env.npm_config_global) {
+    const path = require('path');
 
-  const copyDirectory = require('./utils/copy-directory.util');
-  const logger = require('./utils//logger.util');
+    const copyDirectory = require('./utils/copy-directory.util');
+    const logger = require('./utils//logger.util');
 
-  const sourceDir = 'generate-files';
-  const destDir = `${process.env.INIT_CWD + path.sep}.fsg`;
+    const sourceDir = 'generate-files';
+    const destDir = `${process.env.INIT_CWD + path.sep}.fsg`;
 
-  copyDirectory(sourceDir, destDir).then(() => {
-    logger.log('Installed local', ['.fsg', 'bold'], 'directory.');
-    logger.log('Please see', ['.fsg/fsg.conf.js', 'bold'], 'for reference.');
-  });
+    copyDirectory(sourceDir, destDir).then(() => {
+      logger.log('Installed local', ['.fsg', 'bold'], 'directory.');
+      logger.log('Please see', ['.fsg/fsg.conf.js', 'bold'], 'for reference.');
+    });
+  }
 })();
