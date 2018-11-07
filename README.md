@@ -267,6 +267,15 @@ $ fsg --[type|t]=<type> --[name|n]=<name> [--[config|c]=<config>]
 where `<type>` is type of structure that's going to be generated, 
 defined in config file. You can use any-cased `<name>` of component.
 
+#### Local installation
+For local installation, you will have to add following script in your `package.json`:
+```json
+"scripts": {
+  "fsg": "./node_modules/.bin/fsg"
+},
+```
+then you can run script by using `npm run fsg` with appropiate parameters
+
 ### MIT License
 Copyright (c) 2018 Mateusz Jeziorek <mateusz.jeziorek@o2.pl>
 

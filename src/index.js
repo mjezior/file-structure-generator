@@ -3,9 +3,14 @@
 (function () {
   'use strict';
 
-  require('module-alias/register');
-  const version = require('@root/package.json').version;
+  const moduleAlias = require('module-alias');
   const path = require('path');
+  moduleAlias.addAliases({
+    '@root': path.resolve(__dirname + '/..'),
+    '@src': path.resolve(__dirname + '/../src'),
+    '@utils': path.resolve(__dirname + '/../src/utils')
+  });
+  const version = require('@root/package.json').version;
   const argv = require('yargs')
     .usage('Usage: fsg --type=<type> --name=<name> [--config=<config>]')
     .example('fsg --type=filter --name=testFilter', '- generate file structure for filter with name testFilter')
