@@ -15,7 +15,7 @@ module.exports = {
       case: 'snake'
     },
     rules: [{
-      pattern: './**/generate.*.js',
+      pattern: './**/{{generate}}.*.js',
       generatedFile: {
         nameTag: 'generate',
         case: 'pascal'

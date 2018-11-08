@@ -259,6 +259,12 @@ Final object will look like this: `{nameTag: 'generateName', case: 'pascal'}`
 
 Final object will look like this: `{nameTag: 'generateName', case: 'kebab'}`
 
+**Note:** Please make sure your `generatedFile.nameTag` is wrapped with double
+braces (`'{{}}'`) in real file/directory name in your templates directive. 
+So e.g. you have to create following file:
+
+`./generate-files/filter/{{generateName}}/{{generateName}}.filter.js`
+
 ### Usage
 To generate files structure, use following command:
 ```sh
