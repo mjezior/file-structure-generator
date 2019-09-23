@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test:unit": "mocha",
-    "test:lint": "eslint .",
+    "test:lint": "cross-env NODE_ENV=development esprint check",
     "test": "npm run test:lint && npm run test:unit",
     "precommit": "npm run test",
     "release:major": "standard-version -a --no-verify -m \"release: %s\" --release-as major",
@@ -42,20 +42,22 @@
     "fsg": "./src/index.js"
   },
   "devDependencies": {
-    "babel-eslint": "^9.0.0",
-    "eslint": "^5.8.0",
-    "husky": "^0.14.3",
-    "mocha": "^5.2.0",
-    "standard-version": "^4.4.0"
+    "babel-eslint": "10.0.3",
+    "cross-env": "6.0.0",
+    "eslint": "6.4.0",
+    "esprint": "0.5.0",
+    "husky": "3.0.5",
+    "mocha": "6.2.0",
+    "standard-version": "7.0.0"
   },
   "dependencies": {
-    "chalk": "^2.4.1",
-    "escape-string-regexp": "^1.0.5",
-    "fs-extra": "^7.0.0",
-    "klaw": "^3.0.0",
-    "lodash": "^4.17.10",
-    "module-alias": "^2.1.0",
-    "through2": "^2.0.3",
-    "yargs": "^12.0.2"
+    "chalk": "2.4.2",
+    "escape-string-regexp": "2.0.0",
+    "fs-extra": "8.1.0",
+    "klaw": "3.0.0",
+    "lodash": "4.17.15",
+    "module-alias": "2.2.1",
+    "through2": "3.0.1",
+    "yargs": "14.0.0"
   }
 }
