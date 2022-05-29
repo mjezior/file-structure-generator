@@ -53,7 +53,7 @@
   "dependencies": {
     "chalk": "2.4.2",
     "escape-string-regexp": "2.0.0",
-    "fs-extra": "8.1.0",
+    "fs-extra": "^9.0.0",
     "klaw": "3.0.0",
     "lodash": "4.17.15",
     "module-alias": "2.2.1",
